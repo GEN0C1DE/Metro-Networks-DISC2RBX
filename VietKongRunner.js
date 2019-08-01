@@ -1,6 +1,6 @@
 ﻿global.Dependencies = {
 	Discord: require("discord.js"),
-	Request: require("require"),
+	Request: require("request"),
 	Express: require("express"),
 	BodyParser: require("body-parser") 
 }
