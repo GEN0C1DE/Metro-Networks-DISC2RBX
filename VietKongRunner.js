@@ -8,6 +8,7 @@
 
 const Application = Dependencies.Express()
 const Client = new Dependencies.Discord.Client();
+const Port = process.env.PORT || 3000;
 
 global.Settings = {
 	Login: process.env.CLIENT_TOKEN,
@@ -96,8 +97,9 @@ Application.post("/vwrp", function (request, results) {
 	}	
 });
 
-Application.listen(3000);
-console.log("Running express on port 3000...");
+Application.listen(Port, () => {
+    console.log(`Our app is running on port ${ Port }`);
+});
 
 
 Client.on("ready", Ready => {
