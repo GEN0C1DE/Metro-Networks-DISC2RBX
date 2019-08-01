@@ -10,8 +10,8 @@ const Application = Dependencies.Express()
 const Client = new Dependencies.Discord.Client();
 
 global.Settings = {
-	Login = process.env.CLIENT_TOKEN,
-	Version = "0.0.1",
+	Login: process.env.CLIENT_TOKEN,
+	Version: "0.0.1",
 	["Operations"]: {
 		"MainUser": {
 			"guildId": "000000000000000000",
