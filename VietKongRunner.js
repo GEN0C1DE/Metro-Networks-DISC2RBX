@@ -8,7 +8,7 @@
 
 const Application = Dependencies.Express()
 const Client = new Dependencies.Discord.Client();
-const Port = process.env.PORT || 3000;
+const Port = 3000;
 
 global.Settings = {
 	Login: process.env.CLIENT_TOKEN,
