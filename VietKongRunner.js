@@ -14,15 +14,10 @@ global.Settings = {
 	Version: "0.0.1",
 	["Operations"]: {
 		"MainUser": {
-			"guildId": "000000000000000000",
-			"commandChannelName": "botspam",
-			"apikey": "Recommended to use a 24 character long alphanumeric string"
+			"guildId": "606476944250241025",
+			"commandChannelName": "bot-commands",
+			"apikey": "45967b6b-4be1-4578-9527-e9c44873996a"
 		},
-		"AnotherUser": {
-			"guildId": "000000000000000001",
-			"commandChannelName": "bot_commands",
-			"apikey": "a302A6bxz9UzO8PwS2nmF33i"
-		}
 	}
 }
 
