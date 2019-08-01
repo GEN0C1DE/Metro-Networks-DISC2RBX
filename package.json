@@ -2,7 +2,7 @@
   "name": "VietKong",
   "version": "0.0.1",
   "description": "VietKong Sneaky, Sneaky Discord to Roblox Communication.",
-  "main": "app.js",
+  "main": "VietKongRunner.js",
   "scripts": {
     "start": "node VietKongRunner.js"
   },
