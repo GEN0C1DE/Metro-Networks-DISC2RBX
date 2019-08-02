@@ -74,10 +74,8 @@ Application.post("/vwrp", function (request, results) {
 	}	
 });
 
-Application.listen(Port, () => {
-    console.log(`Our app is running on port ${ Port }`);
-});
-
+expressApp.listen(Port);
+console.log(`Running express on port ${Port}...`);
 
 
 function SendEmbededMessage(Channel, Information) {
