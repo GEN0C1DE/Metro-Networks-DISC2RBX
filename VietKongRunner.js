@@ -29,29 +29,6 @@ var Restarts = -1;
 var CallsFromApi = 0;
 var Commands = 0;
 
-function SendEmbededMessage(Channel, Information) {
-	var URL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
-	request({ url: URL, json: true }, function (Error, Response, Body) {
-		if (!Error && Response.statusCode === 200) {
-			if (Information.waitForProfPic && Body.Final === false) {
-				console.log("No profile picture ready, Retrying. " + Body.Url);
-				setTimeout(SendEmbededMessage, 7000, Channel, Information);
-				return;
-			}
-
-			var Embed = new Dependencies.Discord.RichEmbed()
-				.setColor(0x00AE86)
-				.setThumbnail(Body.Url) 
-				.addField("Player Name", "**" + Information.playerName + "**")
-				.addField("Player UserId", "**" + Information.playerId + "**")
-				.setDescription("*" + Information.text + "*");
-			Channel.send(Embed);
-		} else {
-			console.log("Response Code Failed. " + Response.statusCode);
-		}
-	})
-}
-
 Application.use(Dependencies.BodyParser.json());
 
 Application.get("/", function (request, results) {
@@ -102,6 +79,33 @@ Application.listen(Port, () => {
 });
 
 
+
+function SendEmbededMessage(Channel, Information) {
+	var URL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
+	request({ url: URL, json: true }, function (Error, Response, Body) {
+		if (!Error && Response.statusCode === 200) {
+			if (Information.waitForProfPic && Body.Final === false) {
+				console.log("No profile picture ready, Retrying. " + Body.Url);
+				setTimeout(SendEmbededMessage, 7000, Channel, Information);
+				return;
+			}
+
+			var Embed = new Dependencies.Discord.RichEmbed()
+				.setColor(0x00AE86)
+				.setThumbnail(Body.Url) 
+				.addField("Player Name", "**" + Information.playerName + "**")
+				.addField("Player UserId", "**" + Information.playerId + "**")
+				.setDescription("*" + Information.text + "*");
+			Channel.send(Embed);
+		} else {
+			console.log("Response Code Failed. " + Response.statusCode);
+		}
+	})
+}
+
+
+
+
 Client.on("ready", Ready => {
 	console.log("Vietkong Loaded. Ready for Use!");
 	Restarts += 1;
@@ -127,7 +131,7 @@ Client.on("message", Message => {
 		(seconds%60) + "s " +
 		"**");
 	} else if (Message.content === Prefix + "stats") {
-		Message.channel.send("*Since start, there has been*  **" + CallsFromApi + "** *api calls,*  **");
+		Message.channel.send("*Since start, there has been*  **" + CallsFromApi + "** *api calls,*");
 	}
 });
 
