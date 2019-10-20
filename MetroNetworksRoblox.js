@@ -91,15 +91,14 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 		Embed.addField("Player Name", "**" + Information.playerName + "**")
 		Embed.addField("Player UserId", "**" + Information.playerId + "**")	
 		if (PlayerInGroup == true) {
-			Dependencies.Request({ url: PlayerGroupURL, json: true }, function (Error, Response, Body) {
-				if (!Error && Response.statusCode === 200) {
+			Dependencies.Request({url: PlayerGroupURL}, function (Error, Response, Body) {
+				if (!Error && Response.statusCode == 200) {
 					var Search = Body.find(F => F.Id == Information.assignedGroup)
 					if (Search) {
 						Embed.addField(`Is In Group(${Information.assignedGroup})?`, "**" + "Yes" + "**")
 						Embed.addField("Role In Group", "**" + Search.Role + "**")	
 					} else {
 						Embed.addField(`Is In Group(${Information.assignedGroup})?`, "**" + "No" + "**")
-
 					}
 				} else {
 					console.log("Response Code Failed. " + Response.statusCode);
@@ -121,7 +120,7 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 		})
 	} 
 	if (Group == true) {
-		Dependencies.Request({ url: GroupURL, json: true }, function (Error, Response, Body) {
+		Dependencies.Request({url: GroupURL}, function (Error, Response, Body) {
 			if (!Error && Response.statusCode === 200) {
 				Embed.addField("Group Name", "**" + Body.Name + "**")
 				Embed.addField("Group Owner", "**" + `${Body.Owner.Name}:${Body.Owner.Id}` + "**")
