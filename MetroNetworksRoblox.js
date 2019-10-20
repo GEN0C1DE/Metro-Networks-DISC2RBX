@@ -86,7 +86,7 @@ function SearchArray(nameKey, myArray){
         }
     }
 }
-function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
+async function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 	var DiscordDataEmbed = {
 		color: 000000, 
 		fields: [
@@ -150,13 +150,12 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 				}
 			})
 		};
-
-		console.log(DiscordDataEmbed)
-		var Embed = new Dependencies.Discord.RichEmbed(DiscordDataEmbed)
-		return Embed
 	}
-	CheckToSee()
-	
+	await CheckToSee()
+
+	console.log(DiscordDataEmbed)
+	var Embed = new Dependencies.Discord.RichEmbed(DiscordDataEmbed)
+	return Embed
 }
 
 
