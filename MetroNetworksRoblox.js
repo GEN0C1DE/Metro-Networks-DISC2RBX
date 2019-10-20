@@ -96,8 +96,8 @@ async function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thu
 	}
  	function PlayerCallback(){
 		if (Player == true) {
-			DiscordDataEmbed.fields.push({name: 'Player Name', value: "**" + Information.playerName + "**"})
-			DiscordDataEmbed.fields.push({name: 'Player UserId', value: "**" + Information.playerId + "**"})
+			DiscordDataEmbed.fields.push({name: '__Player Name__', value: "**" + Information.playerName + "**"})
+			DiscordDataEmbed.fields.push({name: '__Player UserId__', value: "**" + Information.playerId + "**"})
 			DiscordDataEmbed.description = Information.text
 			if (PlayerInGroup == true) {
 				var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
@@ -108,13 +108,13 @@ async function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thu
 						if (Search) {
 							console.log("Pushing Role Values..")
 
-							DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**Yes**"});
-							DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**" + Search.Role + "**"});
+							DiscordDataEmbed.fields.push({name: `__Is In Group(${Information.assignedGroup})?__`, value: "**Yes**"});
+							DiscordDataEmbed.fields.push({name: `__Role In Group(${Information.assignedGroup})?__`, value: "**" + Search.Role + "**"});
 						} else {
 							console.log("Pushing Role Values..")
 
-							DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**No**"});
-							DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**N/A**"});
+							DiscordDataEmbed.fields.push({name: `__Is In Group(${Information.assignedGroup})?__`, value: "**No**"});
+							DiscordDataEmbed.fields.push({name: `__Role In Group(${Information.assignedGroup})?__`, value: "**N/A**"});
 						}
 					})
 			}
@@ -143,9 +143,9 @@ async function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thu
 				.then(json => {
 					console.log("Pushing Group Information")
 
-					DiscordDataEmbed.fields.push({name: 'Group Name', value: "**" + json.Name + "**"});
-					DiscordDataEmbed.fields.push({name: 'Group Owner', value: "**" + `${json.Owner.Name}:${json.Owner.Id}` + "**"});
-					DiscordDataEmbed.fields.push({name: 'Group Name', value: "*" + json.Description + "*"});
+					DiscordDataEmbed.fields.push({name: '__Group Name__', value: "**" + json.Name + "**"});
+					DiscordDataEmbed.fields.push({name: '__Group Owner__', value: "**" + `${json.Owner.Name}:${json.Owner.Id}` + "**"});
+					DiscordDataEmbed.fields.push({name: '__Group Description__', value: "*" + json.Description + "*"});
 				})
 		};
 	}
