@@ -178,7 +178,7 @@ Client.on("message", Message => {
 			"assignedGroup": Settings.Operations.MainUser.assignedGroup,
 		}
 
-		Message.channel(SendEmbed(ToSend, false, false, true, false));
+		Message.channel.send(SendEmbed(ToSend, false, false, true, false));
 	}
 });
 
