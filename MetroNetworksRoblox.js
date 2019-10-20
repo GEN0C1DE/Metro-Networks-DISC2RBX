@@ -65,7 +65,7 @@ Application.post("/primesyn", function (request, results) {
 					"waitForPictureReady": request.body.waitForPictureReady,
 					"assignedGroup": Settings.Operations.MainUser.assignedGroup
 				};
-				ChannelGottenFrmGuild.send(SendEmbed(OptionsGotten, true, true, false, true));
+				SendEmbed(ChannelGottenFrmGuild, OptionsGotten, true, true, false, true);
 				results.send("Success. Result X0.");
 			} else {
 				results.status(400).send('Text is empty. X0-2.');
@@ -86,7 +86,7 @@ function SearchArray(nameKey, myArray){
         }
     }
 }
-function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
+function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail){
 	var DiscordDataEmbed = {
 		color: 000000, 
 		fields: [
@@ -102,10 +102,9 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 			DiscordDataEmbed.description = Information.text
 			if (PlayerInGroup == true) {
 				var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
-				Dependencies.Request({url: PlayerGroupURL}, async function (Error, Response, Body) {
+				await Dependencies.Request({url: PlayerGroupURL},  function (Error, Response, Body) {
 					if (!Error && Response.statusCode == 200) {
-						await Body
-						var Search = await SearchArray(Information.assignedGroup, Body)
+						var Search =  SearchArray(Information.assignedGroup, Body)
 						if (Search) {
 							console.log("Pushing Role Values..")
 
@@ -125,9 +124,8 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 		};
 		if (Thumbnail == true) {
 			var ThumbnailURL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
-			Dependencies.Request({ url: ThumbnailURL, json: true }, async function (Error, Response, Body) {
+			await Dependencies.Request({ url: ThumbnailURL, json: true }, function (Error, Response, Body) {
 				if (!Error && Response.statusCode === 200) {
-					await Body
 					if (Information.waitForPictureReady && Body.Final === false) {
 						console.log("No Profile Picture ready. " + Body.Url);
 					} else {	
@@ -141,9 +139,8 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 		};
 		if (Group == true) {
 			var GroupURL = ("https://api.roblox.com/groups/" + Information.assignedGroup)
-			Dependencies.Request({url: GroupURL, json: true}, async function (Error, Response, Body) {
+			await Dependencies.Request({url: GroupURL, json: true}, function (Error, Response, Body) {
 				if (!Error && Response.statusCode === 200) {
-					await Body
 					console.log("Pushing Group Values..")
 					DiscordDataEmbed.fields.push({name: 'Group Name', value: "**" + Body.Name + "**"});
 					DiscordDataEmbed.fields.push({name: 'Group Owner', value: "**" + `${Body.Owner.Name}:${Body.Owner.Id}` + "**"});
@@ -153,13 +150,11 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 				}
 			})
 		};
-
-		console.log(DiscordDataEmbed)
-		var Embed = new Dependencies.Discord.RichEmbed(DiscordDataEmbed)
-		return Embed
 	}
 	CheckToSee()
 
+	var NewEmbed = new Dependencies.Discord.RichEmbed(DiscordDataEmbed)
+	Channel.send()
 }
 
 
@@ -193,7 +188,7 @@ Client.on("message", Message => {
 			"assignedGroup": Settings.Operations.MainUser.assignedGroup,
 		}
 
-		Message.channel.send(SendEmbed(ToSend, false, false, true, false));
+		SendEmbed(Message.channel, ToSend, false, false, true, false);
 	}
 });
 
