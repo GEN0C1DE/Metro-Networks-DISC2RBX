@@ -89,7 +89,7 @@ function SearchArray(nameKey, myArray){
 function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail){
 	var Embed = new Dependencies.Discord.RichEmbed()
 	Embed.setColor("000000")
-	
+
 	if (Player == true) {
 		Embed.addField("Player Name", "**" + Information.playerName + "**")
 		Embed.addField("Player UserId", "**" + Information.playerId + "**")	
@@ -110,8 +110,7 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 				}
 			})
 		}
-	}
-	if (Thumbnail == true) {
+	} else if (Thumbnail == true) {
 		var ThumbnailURL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
 		Dependencies.Request({ url: ThumbnailURL, json: true }, function (Error, Response, Body) {
 			if (!Error && Response.statusCode === 200) {
@@ -124,8 +123,7 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 				console.log("Response Code Failed. " + Response.statusCode);
 			}
 		})
-	} 
-	if (Group == true) {
+	} else if (Group == true) {
 		var GroupURL = ("https://api.roblox.com/groups/" + Information.assignedGroup)
 		Dependencies.Request({url: GroupURL, json: true}, function (Error, Response, Body) {
 			if (!Error && Response.statusCode === 200) {
@@ -138,7 +136,8 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 			}
 		})
 	}
-	Channel.send(Embed)
+	
+	return Channel.send(Embed)
 }
 
 
