@@ -93,10 +93,6 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 		if (PlayerInGroup == true) {
 			Dependencies.Request({ url: PlayerGroupURL, json: true }, function (Error, Response, Body) {
 				if (!Error && Response.statusCode === 200) {
-					if (Body.Final === false) {
-						console.log("No Player Group Information ready. " + Body.Url);
-					}
-	
 					var Search = Body.find(F => F.Id == Information.assignedGroup)
 					if (Search) {
 						Embed.addField(`Is In Group(${Information.assignedGroup})?`, "**" + "Yes" + "**")
@@ -127,10 +123,6 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 	if (Group == true) {
 		Dependencies.Request({ url: GroupURL, json: true }, function (Error, Response, Body) {
 			if (!Error && Response.statusCode === 200) {
-				if (Body.Final === false) {
-					console.log("No information ready. " + Body.Url);
-				}
-
 				Embed.addField("Group Name", "**" + Body.Name + "**")
 				Embed.addField("Group Owner", "**" + `${Body.Owner.Name}:${Body.Owner.Id}` + "**")
 				Embed.addField("Group Description", "*" + Body.Description + "*");
