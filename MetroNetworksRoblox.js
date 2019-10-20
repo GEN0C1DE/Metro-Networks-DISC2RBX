@@ -94,6 +94,7 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 		],
 		timestamp: new Date()
 	}
+
 	function CheckToSee() {
 		if (Player == true) {
 			DiscordDataEmbed.fields.push({name: 'Player Name', value: "**" + Information.playerName + "**"})
@@ -107,13 +108,13 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 						if (Search) {
 							console.log("Pushing Role Values..")
 
-							DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**" + "Yes" + "**"})
-							DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**" + Search.Role + "**"})
+							DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**Yes**"});
+							DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**" + Search.Role + "**"});
 						} else {
 							console.log("Pushing Role Values..")
 
-							DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**" + "No" + "**"})
-							DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**" + "N/A" + "**"})
+							DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**No**"});
+							DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**N/A**"});
 						}
 					} else {
 						console.log("Response Code Failed. " + Response.statusCode);
@@ -128,8 +129,8 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 					if (Information.waitForPictureReady && Body.Final === false) {
 						console.log("No Profile Picture ready. " + Body.Url);
 					} else {	
-						console.log("Pushing Thumbnail Value..")
-						DiscordDataEmbed.thumbnail = { url: Body.url }
+						console.log("Pushing Thumbnail Value..");
+						DiscordDataEmbed.thumbnail = { url: Body.url };
 					}
 				} else {
 					console.log("Response Code Failed. " + Response.statusCode);
@@ -141,20 +142,21 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 			Dependencies.Request({url: GroupURL, json: true}, function (Error, Response, Body) {
 				if (!Error && Response.statusCode === 200) {
 					console.log("Pushing Group Values..")
-					DiscordDataEmbed.fields.push({name: 'Group Name', value: "**" + Body.Name + "**"})
-					DiscordDataEmbed.fields.push({name: 'Group Owner', value: "**" + `${Body.Owner.Name}:${Body.Owner.Id}` + "**"})
-					DiscordDataEmbed.fields.push({name: 'Group Name', value: "*" + Body.Description + "*"})
+					DiscordDataEmbed.fields.push({name: 'Group Name', value: "**" + Body.Name + "**"});
+					DiscordDataEmbed.fields.push({name: 'Group Owner', value: "**" + `${Body.Owner.Name}:${Body.Owner.Id}` + "**"});
+					DiscordDataEmbed.fields.push({name: 'Group Name', value: "*" + Body.Description + "*"});
 				} else {
 					console.log("Response Code Failed. " + Response.statusCode);
 				}
 			})
 		};
-	}
-	CheckToSee()	
 
-	console.log(DiscordDataEmbed)
-	var Embed = new Dependencies.Discord.RichEmbed(DiscordDataEmbed)
-	return Embed
+		console.log(DiscordDataEmbed)
+		var Embed = new Dependencies.Discord.RichEmbed(DiscordDataEmbed)
+		return Embed
+	}
+	CheckToSee()
+	
 }
 
 
