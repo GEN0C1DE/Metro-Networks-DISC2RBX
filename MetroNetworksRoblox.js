@@ -32,9 +32,9 @@ var Commands = 0;
 Application.use(Dependencies.BodyParser.json());
 
 Application.get("/", function (request, results) {
-	results.send("Vietnam War Roleplay Server Request Was Sent by Request. Connection is Established.");
+	results.send("Metro Networks Server Request Was Sent by Request. Connection is Established.");
 });
-Application.post("/vwrp", function (request, results) {
+Application.post("/primesyn", function (request, results) {
 	CallsFromApi = CallsFromApi + 1;
 	var TemporaryCheckGuildId = 0
 
