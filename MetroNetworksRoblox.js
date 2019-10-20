@@ -146,8 +146,9 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 			})
 	};
 
+	console.log(DiscordDataEmbed)
 	var NewEmbed = new Dependencies.Discord.RichEmbed(DiscordDataEmbed)
-	Channel.send()
+	Channel.send(NewEmbed)
 }
 
 
