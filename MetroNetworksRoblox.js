@@ -101,7 +101,7 @@ async function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thu
 			DiscordDataEmbed.description = Information.text
 			if (PlayerInGroup == true) {
 				var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
-				Dependencies.Fetch(PlayerGroupURL)
+				return Dependencies.Fetch(PlayerGroupURL)
 					.then(Resolve => Resolve.json())
 					.then(json => {
 						var Search =  SearchArray(Information.assignedGroup, json)
@@ -123,7 +123,7 @@ async function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thu
 	function ThumbnailCallback(){	
 		if (Thumbnail == true) {
 			var ThumbnailURL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
-			Dependencies.Fetch(ThumbnailURL)
+			return Dependencies.Fetch(ThumbnailURL)
 				.then(Resolve => Resolve.json())
 				.then(json => {
 					if (Information.waitForPictureReady && json.Final === false) {
@@ -138,7 +138,7 @@ async function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thu
 	function GroupCallback(){	
 		if (Group == true) {
 			var GroupURL = ("https://api.roblox.com/groups/" + Information.assignedGroup)
-			Dependencies.Fetch(GroupURL)
+			return Dependencies.Fetch(GroupURL)
 				.then(Resolve => Resolve.json())
 				.then(json => {
 					console.log("Pushing Group Information")
