@@ -1,4 +1,4 @@
-﻿global.Dependencies = {
+global.Dependencies = {
 	Discord: require("discord.js"),
 	Request: require("request"),
 	Express: require("express"),
@@ -15,9 +15,10 @@ global.Settings = {
 	Version: "0.0.1",
 	Operations: {
 		MainUser: {
-			guildId: "592079101716594702",
-			commandChannelName: "commands-text",
-			apikey: "45967b6b-4be1-4578-9527-e9c44873996a"
+			guildId: "606476944250241025",
+			commandChannelName: "bot-commands",
+			apikey: "45967b6b-4be1-4578-9527-e9c44873996a",
+			assignedGroup: 3309618
 		},
 	}
 }
@@ -60,10 +61,11 @@ Application.post("/primesyn", function (request, results) {
 				var OptionsGotten = {
 					"playerId": request.body.message.playerId,
 					"playerName": request.body.message.playerName,
-					"text": request.body.message.text,
-					"waitForPictureReady": request.body.waitForPictureReady
+					"text": request.body.message.text,					
+					"waitForPictureReady": request.body.waitForPictureReady,
+					"assignedGroup": Settings.Operations.MainUser.assignedGroup
 				};
-				SendEmbededMessage(ChannelGottenFrmGuild, OptionsGotten, 0);
+				SendEmbed(ChannelGottenFrmGuild, OptionsGotten, true, true, false, true);
 				results.send("Success. Result X0.");
 			} else {
 				results.status(400).send('Text is empty. X0-2.');
@@ -77,30 +79,67 @@ Application.post("/primesyn", function (request, results) {
 Application.listen(Port);
 console.log(`Running express on port ${Port}...`);
 
+function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail){
+	var GroupURL = ("https://api.roblox.com/groups/" + Information.assignedGroup)
+	var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
+	var ThumbnailURL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
 
-function SendEmbededMessage(Channel, Information) {
-	var URL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
-	Dependencies.Request({ url: URL, json: true }, function (Error, Response, Body) {
-		if (!Error && Response.statusCode === 200) {
-			if (Information.waitForProfPic && Body.Final === false) {
-				console.log("No profile picture ready, Retrying. " + Body.Url);
-				setTimeout(SendEmbededMessage, 7000, Channel, Information);
-				return;
-			}
+	var Embed = new Dependencies.Discord.RichEmbed()
+	Embed.setColor("000000")
+	
+	if (Player == true) {
+		Embed.addField("Player Name", "**" + Information.playerName + "**")
+		Embed.addField("Player UserId", "**" + Information.playerId + "**")	
+		if (PlayerInGroup == true) {
+			Dependencies.Request({ url: PlayerGroupURL, json: true }, function (Error, Response, Body) {
+				if (!Error && Response.statusCode === 200) {
+					if (Body.Final === false) {
+						console.log("No Player Group Information ready. " + Body.Url);
+					}
+	
+					var Search = Body.find(F => F.Id == Information.assignedGroup)
+					if (Search) {
+						Embed.addField(`Is In Group(${Information.assignedGroup})?`, "**" + "Yes" + "**")
+						Embed.addField("Role In Group", "**" + Search.Role + "**")	
+					} else {
+						Embed.addField(`Is In Group(${Information.assignedGroup})?`, "**" + "No" + "**")
 
-			var Embed = new Dependencies.Discord.RichEmbed()
-				.setColor(0x00AE86)
-				.setThumbnail(Body.Url) 
-				.addField("Player Name", "**" + Information.playerName + "**")
-				.addField("Player UserId", "**" + Information.playerId + "**")
-				.setDescription("*" + Information.text + "*");
-			Channel.send(Embed);
-		} else {
-			console.log("Response Code Failed. " + Response.statusCode);
+					}
+				} else {
+					console.log("Response Code Failed. " + Response.statusCode);
+				}
+			})
 		}
-	})
-}
+	}
+	if (Thumbnail == true) {
+		Dependencies.Request({ url: ThumbnailURL, json: true }, function (Error, Response, Body) {
+			if (!Error && Response.statusCode === 200) {
+				if (Information.waitForPictureReady && Body.Final === false) {
+					console.log("No Profile Picture ready. " + Body.Url);
+				} else {
+					Embed.setThumbnail(Body.Url) 
+				}
+			} else {
+				console.log("Response Code Failed. " + Response.statusCode);
+			}
+		})
+	} 
+	if (Group == true) {
+		Dependencies.Request({ url: GroupURL, json: true }, function (Error, Response, Body) {
+			if (!Error && Response.statusCode === 200) {
+				if (Body.Final === false) {
+					console.log("No information ready. " + Body.Url);
+				}
 
+				Embed.addField("Group Name", "**" + Body.Name + "**")
+				Embed.addField("Group Owner", "**" + `${Body.Owner.Name}:${Body.Owner.Id}` + "**")
+				Embed.addField("Group Description", "*" + Body.Description + "*");
+			} else {
+				console.log("Response Code Failed. " + Response.statusCode);
+			}
+		})
+	}
+}
 
 
 
@@ -128,8 +167,12 @@ Client.on("message", Message => {
 		(minutes%60) + "m " +
 		(seconds%60) + "s " +
 		"**");
-	} else if (Message.content === Prefix + "stats") {
-		Message.channel.send("*Since start, there has been*  **" + CallsFromApi + "** *api calls,*");
+	} else if (Message.content === Prefix + "group") {
+		var ToSend = {
+			"assignedGroup": Settings.Operations.MainUser.assignedGroup,
+		}
+
+		SendEmbededGroup(Message.channel, ToSend, false, false, true, false);
 	}
 });
 
