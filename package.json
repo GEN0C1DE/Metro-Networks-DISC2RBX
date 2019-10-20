@@ -1,10 +1,10 @@
 {
-  "name": "VietKong",
+  "name": "Metro Networks Roblox",
   "version": "0.0.1",
-  "description": "VietKong Sneaky, Sneaky Discord to Roblox Communication.",
+  "description": "Metro Sneaky, Sneaky Discord to Roblox Communication.",
   "main": "VietKongRunner.js",
   "scripts": {
-    "start": "node VietKongRunner.js"
+    "start": "node MetroNetworksRoblox.js"
   },
   "author": "Pokidat",
   "dependencies": {
