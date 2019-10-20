@@ -129,6 +129,7 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 		var GroupURL = ("https://api.roblox.com/groups/" + Information.assignedGroup)
 		Dependencies.Request({url: GroupURL}, function (Error, Response, Body) {
 			if (!Error && Response.statusCode === 200) {
+				console.log(Body)
 				Embed.addField("Group Name", "**" + Body.Name + "**")
 				Embed.addField("Group Owner", "**" + `${Body.Owner.Name}:${Body.Owner.Id}` + "**")
 				Embed.addField("Group Description", "*" + Body.Description + "*");
