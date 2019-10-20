@@ -2,7 +2,7 @@
   "name": "Metro Networks Roblox",
   "version": "0.0.1",
   "description": "Metro Sneaky, Sneaky Discord to Roblox Communication.",
-  "main": "VietKongRunner.js",
+  "main": "MetroNetworksRoblox.js",
   "scripts": {
     "start": "node MetroNetworksRoblox.js"
   },
