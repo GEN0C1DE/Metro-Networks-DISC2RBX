@@ -94,55 +94,63 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 		],
 		timestamp: new Date()
 	}
-	if (Player == true) {
-		DiscordDataEmbed.fields.push({name: 'Player Name', value: "**" + Information.playerName + "**"})
-		DiscordDataEmbed.fields.push({name: 'Player UserId', value: "**" + Information.playerId + "**"})
-		DiscordDataEmbed.description = Information.text
-		if (PlayerInGroup == true) {
-			var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
-			Dependencies.Request({url: PlayerGroupURL}, function (Error, Response, Body) {
-				if (!Error && Response.statusCode == 200) {
-					var Search = SearchArray(Information.assignedGroup, Body)
-					if (Search) {
-						DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**" + "Yes" + "**"})
-						DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**" + Search.Role + "**"})
-					} else {
-						DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**" + "No" + "**"})
-						DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**" + "N/A" + "**"})
+	function CheckToSee() {
+		if (Player == true) {
+			DiscordDataEmbed.fields.push({name: 'Player Name', value: "**" + Information.playerName + "**"})
+			DiscordDataEmbed.fields.push({name: 'Player UserId', value: "**" + Information.playerId + "**"})
+			DiscordDataEmbed.description = Information.text
+			if (PlayerInGroup == true) {
+				var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
+				Dependencies.Request({url: PlayerGroupURL}, function (Error, Response, Body) {
+					if (!Error && Response.statusCode == 200) {
+						var Search = SearchArray(Information.assignedGroup, Body)
+						if (Search) {
+							console.log("Pushing Role Values..")
 
+							DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**" + "Yes" + "**"})
+							DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**" + Search.Role + "**"})
+						} else {
+							console.log("Pushing Role Values..")
+
+							DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**" + "No" + "**"})
+							DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**" + "N/A" + "**"})
+						}
+					} else {
+						console.log("Response Code Failed. " + Response.statusCode);
+					}
+				})
+			}
+		};
+		if (Thumbnail == true) {
+			var ThumbnailURL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
+			Dependencies.Request({ url: ThumbnailURL, json: true }, function (Error, Response, Body) {
+				if (!Error && Response.statusCode === 200) {
+					if (Information.waitForPictureReady && Body.Final === false) {
+						console.log("No Profile Picture ready. " + Body.Url);
+					} else {	
+						console.log("Pushing Thumbnail Value..")
+						DiscordDataEmbed.thumbnail = { url: Body.url }
 					}
 				} else {
 					console.log("Response Code Failed. " + Response.statusCode);
 				}
 			})
-		}
-	};
-	if (Thumbnail == true) {
-		var ThumbnailURL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
-		Dependencies.Request({ url: ThumbnailURL, json: true }, function (Error, Response, Body) {
-			if (!Error && Response.statusCode === 200) {
-				if (Information.waitForPictureReady && Body.Final === false) {
-					console.log("No Profile Picture ready. " + Body.Url);
-				} else {	
-					DiscordDataEmbed.thumbnail = { url: Body.url }
+		};
+		if (Group == true) {
+			var GroupURL = ("https://api.roblox.com/groups/" + Information.assignedGroup)
+			Dependencies.Request({url: GroupURL, json: true}, function (Error, Response, Body) {
+				if (!Error && Response.statusCode === 200) {
+					console.log("Pushing Group Values..")
+					DiscordDataEmbed.fields.push({name: 'Group Name', value: "**" + Body.Name + "**"})
+					DiscordDataEmbed.fields.push({name: 'Group Owner', value: "**" + `${Body.Owner.Name}:${Body.Owner.Id}` + "**"})
+					DiscordDataEmbed.fields.push({name: 'Group Name', value: "*" + Body.Description + "*"})
+				} else {
+					console.log("Response Code Failed. " + Response.statusCode);
 				}
-			} else {
-				console.log("Response Code Failed. " + Response.statusCode);
-			}
-		})
-	};
-	if (Group == true) {
-		var GroupURL = ("https://api.roblox.com/groups/" + Information.assignedGroup)
-		Dependencies.Request({url: GroupURL, json: true}, function (Error, Response, Body) {
-			if (!Error && Response.statusCode === 200) {
-				DiscordDataEmbed.fields.push({name: 'Group Name', value: "**" + Body.Name + "**"})
-				DiscordDataEmbed.fields.push({name: 'Group Owner', value: "**" + `${Body.Owner.Name}:${Body.Owner.Id}` + "**"})
-				DiscordDataEmbed.fields.push({name: 'Group Name', value: "*" + Body.Description + "*"})
-			} else {
-				console.log("Response Code Failed. " + Response.statusCode);
-			}
-		})
-	};
+			})
+		};
+	}
+	CheckToSee()	
 
 	console.log(DiscordDataEmbed)
 	var Embed = new Dependencies.Discord.RichEmbed(DiscordDataEmbed)
