@@ -127,7 +127,7 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 	} 
 	if (Group == true) {
 		var GroupURL = ("https://api.roblox.com/groups/" + Information.assignedGroup)
-		Dependencies.Request({url: GroupURL}, function (Error, Response, Body) {
+		Dependencies.Request({url: GroupURL, json: true}, function (Error, Response, Body) {
 			if (!Error && Response.statusCode === 200) {
 				console.log(Body)
 				Embed.addField("Group Name", "**" + Body.Name + "**")
