@@ -139,6 +139,7 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 			}
 		})
 	}
+	Channel.send(Embed)
 }
 
 
@@ -172,7 +173,7 @@ Client.on("message", Message => {
 			"assignedGroup": Settings.Operations.MainUser.assignedGroup,
 		}
 
-		SendEmbededGroup(Message.channel, ToSend, false, false, true, false);
+		SendEmbed(Message.channel, ToSend, false, false, true, false);
 	}
 });
 
