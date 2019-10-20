@@ -102,7 +102,6 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 			var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
 			Dependencies.Request({url: PlayerGroupURL}, function (Error, Response, Body) {
 				if (!Error && Response.statusCode == 200) {
-					console.log(Body)
 					var Search = SearchArray(Information.assignedGroup, Body)
 					if (Search) {
 						DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**" + "Yes" + "**"})
@@ -134,7 +133,6 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 		var GroupURL = ("https://api.roblox.com/groups/" + Information.assignedGroup)
 		Dependencies.Request({url: GroupURL, json: true}, function (Error, Response, Body) {
 			if (!Error && Response.statusCode === 200) {
-				console.log(Body)
 				DiscordDataEmbed.fields.push({name: 'Group Name', value: "**" + Body.Name + "**"})
 				DiscordDataEmbed.fields.push({name: 'Group Owner', value: "**" + `${Body.Owner.Name}:${Body.Owner.Id}` + "**"})
 				DiscordDataEmbed.fields.push({name: 'Group Name', value: "*" + Body.Description + "*"})
@@ -144,6 +142,7 @@ function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 		})
 	};
 
+	console.log(DiscordDataEmbed)
 	var Embed = new Dependencies.Discord.RichEmbed(DiscordDataEmbed)
 	return Embed
 }
