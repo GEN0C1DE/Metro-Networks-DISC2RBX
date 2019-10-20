@@ -80,7 +80,7 @@ console.log(`Running express on port ${Port}...`);
 
 function SendEmbededMessage(Channel, Information) {
 	var URL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
-	request({ url: URL, json: true }, function (Error, Response, Body) {
+	Dependencies.Request({ url: URL, json: true }, function (Error, Response, Body) {
 		if (!Error && Response.statusCode === 200) {
 			if (Information.waitForProfPic && Body.Final === false) {
 				console.log("No profile picture ready, Retrying. " + Body.Url);
