@@ -86,7 +86,7 @@ function SearchArray(nameKey, myArray){
         }
     }
 }
-function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail){
+async function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail){
 	var DiscordDataEmbed = {
 		color: 000000, 
 		fields: [
@@ -94,61 +94,67 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 		],
 		timestamp: new Date()
 	}
+ 	function PlayerCallback(){
+		if (Player == true) {
+			DiscordDataEmbed.fields.push({name: 'Player Name', value: "**" + Information.playerName + "**"})
+			DiscordDataEmbed.fields.push({name: 'Player UserId', value: "**" + Information.playerId + "**"})
+			DiscordDataEmbed.description = Information.text
+			if (PlayerInGroup == true) {
+				var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
+				Dependencies.Fetch(PlayerGroupURL)
+					.then(Resolve => Resolve.json())
+					.then(json => {
+						var Search =  SearchArray(Information.assignedGroup, json)
+						if (Search) {
+							console.log("Pushing Role Values..")
 
- 	
-	if (Player == true) {
-		DiscordDataEmbed.fields.push({name: 'Player Name', value: "**" + Information.playerName + "**"})
-		DiscordDataEmbed.fields.push({name: 'Player UserId', value: "**" + Information.playerId + "**"})
-		DiscordDataEmbed.description = Information.text
-		if (PlayerInGroup == true) {
-			var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
-			Dependencies.Fetch(PlayerGroupURL)
+							DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**Yes**"});
+							DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**" + Search.Role + "**"});
+						} else {
+							console.log("Pushing Role Values..")
+
+							DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**No**"});
+							DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**N/A**"});
+						}
+					})
+			}
+		};
+	}
+	function ThumbnailCallback(){	
+		if (Thumbnail == true) {
+			var ThumbnailURL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
+			Dependencies.Fetch(ThumbnailURL)
 				.then(Resolve => Resolve.json())
 				.then(json => {
-					var Search =  SearchArray(Information.assignedGroup, json)
-					if (Search) {
-						console.log("Pushing Role Values..")
-
-						DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**Yes**"});
-						DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**" + Search.Role + "**"});
-					} else {
-						console.log("Pushing Role Values..")
-
-						DiscordDataEmbed.fields.push({name: `Is In Group(${Information.assignedGroup})?`, value: "**No**"});
-						DiscordDataEmbed.fields.push({name: `Role In Group(${Information.assignedGroup})?`, value: "**N/A**"});
+					if (Information.waitForPictureReady && json.Final === false) {
+						console.log("No Profile Picture ready. " + json.Url);
+					} else {	
+						console.log("Pushing Thumbnail Value..");
+						DiscordDataEmbed.thumbnail = { url: json.Url };
 					}
 				})
-		}
-	};
-	if (Thumbnail == true) {
-		var ThumbnailURL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
-		Dependencies.Fetch(ThumbnailURL)
-			.then(Resolve => Resolve.json())
-			.then(json => {
-				if (Information.waitForPictureReady && json.Final === false) {
-					console.log("No Profile Picture ready. " + json.Url);
-				} else {	
-					console.log("Pushing Thumbnail Value..");
-					DiscordDataEmbed.thumbnail = { url: json.Url };
-				}
-			})
-	};
-	if (Group == true) {
-		var GroupURL = ("https://api.roblox.com/groups/" + Information.assignedGroup)
-		Dependencies.Fetch(GroupURL)
-			.then(Resolve => Resolve.json())
-			.then(json => {
-				console.log("Pushing Group Information")
+		};
+	}
+	function GroupCallback(){	
+		if (Group == true) {
+			var GroupURL = ("https://api.roblox.com/groups/" + Information.assignedGroup)
+			Dependencies.Fetch(GroupURL)
+				.then(Resolve => Resolve.json())
+				.then(json => {
+					console.log("Pushing Group Information")
 
-				DiscordDataEmbed.fields.push({name: 'Group Name', value: "**" + json.Name + "**"});
-				DiscordDataEmbed.fields.push({name: 'Group Owner', value: "**" + `${json.Owner.Name}:${json.Owner.Id}` + "**"});
-				DiscordDataEmbed.fields.push({name: 'Group Name', value: "*" + json.Description + "*"});
-			})
-	};
+					DiscordDataEmbed.fields.push({name: 'Group Name', value: "**" + json.Name + "**"});
+					DiscordDataEmbed.fields.push({name: 'Group Owner', value: "**" + `${json.Owner.Name}:${json.Owner.Id}` + "**"});
+					DiscordDataEmbed.fields.push({name: 'Group Name', value: "*" + json.Description + "*"});
+				})
+		};
+	}
 
-	console.log(DiscordDataEmbed)
-	var NewEmbed = new Dependencies.Discord.RichEmbed(DiscordDataEmbed)
-	Channel.send(NewEmbed)
+	Promise.all([PlayerCallback(), ThumbnailCallback(), GroupCallback()])
+	.then(([PCB, TCB, GCB]) => {
+		console.log(DiscordDataEmbed)
+		Channel.send({ embed: DiscordDataEmbed })
+	})
 }
 
 
