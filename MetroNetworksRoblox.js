@@ -105,7 +105,7 @@ function SendEmbededMessage(Channel, Information) {
 
 
 Client.on("ready", Ready => {
-	console.log("Vietkong Loaded. Ready for Use!");
+	console.log("r/MetroNetworks Loaded. Ready for Use!");
 	Restarts += 1;
 	BotStarts = Math.floor(new Date() / 1000);
 });
