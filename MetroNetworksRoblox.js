@@ -65,7 +65,7 @@ Application.post("/primesyn", function (request, results) {
 					"waitForPictureReady": request.body.waitForPictureReady,
 					"assignedGroup": Settings.Operations.MainUser.assignedGroup
 				};
-				SendEmbed(ChannelGottenFrmGuild, OptionsGotten, true, true, false, true);
+				ChannelGottenFrmGuild.send(SendEmbed(OptionsGotten, true, true, false, true));
 				results.send("Success. Result X0.");
 			} else {
 				results.status(400).send('Text is empty. X0-2.');
@@ -86,7 +86,7 @@ function SearchArray(nameKey, myArray){
         }
     }
 }
-function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail){
+function SendEmbed(Information, Player, PlayerInGroup, Group, Thumbnail){
 	var DiscordDataEmbed = {
 		color: 000000, 
 		fields: [
@@ -97,6 +97,7 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 	if (Player == true) {
 		DiscordDataEmbed.fields.push({name: 'Player Name', value: "**" + Information.playerName + "**"})
 		DiscordDataEmbed.fields.push({name: 'Player UserId', value: "**" + Information.playerId + "**"})
+		DiscordDataEmbed.description = Information.text
 		if (PlayerInGroup == true) {
 			var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
 			Dependencies.Request({url: PlayerGroupURL}, function (Error, Response, Body) {
@@ -142,8 +143,9 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 			}
 		})
 	};
+
 	var Embed = new Dependencies.Discord.RichEmbed(DiscordDataEmbed)
-	return Channel.send(Embed)
+	return Embed
 }
 
 
@@ -177,7 +179,7 @@ Client.on("message", Message => {
 			"assignedGroup": Settings.Operations.MainUser.assignedGroup,
 		}
 
-		SendEmbed(Message.channel, ToSend, false, false, true, false);
+		Message.channel(SendEmbed(ToSend, false, false, true, false));
 	}
 });
 
