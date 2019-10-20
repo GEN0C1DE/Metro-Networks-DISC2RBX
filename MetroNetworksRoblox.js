@@ -15,8 +15,8 @@ global.Settings = {
 	Version: "0.0.1",
 	Operations: {
 		MainUser: {
-			guildId: "606476944250241025",
-			commandChannelName: "bot-commands",
+			guildId: "592079101716594702",
+			commandChannelName: "commands-text",
 			apikey: "45967b6b-4be1-4578-9527-e9c44873996a"
 		},
 	}
