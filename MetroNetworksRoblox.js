@@ -79,6 +79,13 @@ Application.post("/primesyn", function (request, results) {
 Application.listen(Port);
 console.log(`Running express on port ${Port}...`);
 
+function SearchArray(nameKey, myArray){
+    for (var i=0; i < myArray.length; i++) {
+        if (myArray[i].Id === nameKey) {
+            return myArray[i];
+        }
+    }
+}
 function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail){
 	var Embed = new Dependencies.Discord.RichEmbed()
 	Embed.setColor("000000")
@@ -91,7 +98,7 @@ function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail
 			Dependencies.Request({url: PlayerGroupURL}, function (Error, Response, Body) {
 				if (!Error && Response.statusCode == 200) {
 					console.log(Body)
-					var Search = Body.find(F => F.Id == Information.assignedGroup)
+					var Search = SearchArray(Information.assignedGroup, Body)
 					if (Search) {
 						Embed.addField(`Is In Group(${Information.assignedGroup})?`, "**" + "Yes" + "**")
 						Embed.addField("Role In Group", "**" + Search.Role + "**")	
