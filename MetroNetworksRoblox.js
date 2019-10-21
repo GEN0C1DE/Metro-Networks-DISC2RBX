@@ -219,10 +219,10 @@ Client.on("message", Message => {
 		}
 		var Extensions = {
 			Group = {
-				Name = true,
-				Owner = true,
-				Description = true,
-				Thumbnail = true
+				"Name": true,
+				"Group": true,
+				"Description": true,
+				"Thumbnail": true
 			}
 		}
 		SendEmbed(Message.channel, ToSend, Extensions);
