@@ -118,7 +118,7 @@ async function SendEmbed(Channel, Information){
 				return Dependencies.Fetch(PlayerGroupURL)
 					.then(Resolve => Resolve.json())
 					.then(json => {
-						var Search =  SearchArray(Information.assignedGroup, json)
+						var Search =  await SearchArray(Information.assignedGroup, json)
 						if (Search) {
 							DiscordDataEmbed.fields.push({name: `__Is In Group(${Information.assignedGroup})?__`, value: "**Yes**"});
 							if (PlayerExtensions.RoleInGroup && PlayerExtensions.RoleInGroup == true) DiscordDataEmbed.fields.push({name: `__Role In Group(${Information.assignedGroup})?__`, value: "**" + Search.Role + "**"});
