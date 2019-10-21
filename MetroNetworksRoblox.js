@@ -49,27 +49,26 @@ Application.post("/primesyn", function (request, results) {
 
 	var ChannelGottenFrmGuild = Client.guilds.get(TemporaryCheckGuildId).channels.find(x => x.name === request.body.channel);
 	if (ChannelGottenFrmGuild) {
-		if (request.body.messageType == "PlainText") {
-			if(request.body.message.text.length > 1) {
-				ChannelGottenFrmGuild.send(request.body.message.text);
-				results.send("Success. Result X0.");
-			} else {
-				results.status(400).send('Text is empty. X0-2.');
-			}
-		} else if (request.body.messageType == "ProfilePicture") {
-			if(request.body.message.text.length > 1) {
-				var OptionsGotten = {
-					"playerId": request.body.message.playerId,
-					"playerName": request.body.message.playerName,
-					"text": request.body.message.text,					
-					"waitForPictureReady": request.body.waitForPictureReady,
-					"assignedGroup": Settings.Operations.MainUser.assignedGroup
-				};
-				SendEmbed(ChannelGottenFrmGuild, OptionsGotten, true, true, false, true);
-				results.send("Success. Result X0.");
-			} else {
-				results.status(400).send('Text is empty. X0-2.');
-			}
+		if(request.body.extensions) {
+			var OptionsGotten = {		
+				"waitForPictureReady": request.body.waitForPictureReady,
+				"assignedGroup": Settings.Operations.MainUser.assignedGroup,
+				"extensions": request.body.extensions
+			};
+
+			if (request.body.extensions.Message){
+				var MessageExtension = request.body.extensions.Message
+				if (MessageExtension.MessageType == "RichEmbed") {
+					SendEmbed(ChannelGottenFrmGuild, OptionsGotten);
+				} else {
+					if (MessageExtension.MessageEnabled !== false) {
+						if(MessageExtension.Message.length > 1) { ChannelGottenFrmGuild.send(`**Message from the Roblox Server: ${MessageExtension.Message}**`) } else { results.status(400).send('Message was not supplied. X0-2.') }
+					}
+				}	
+			}		
+			results.send("Success. Result X0.");
+		} else {
+			results.status(400).send('Extensions were not supplied. X0-2.');
 		} 
 	} else {
 		results.status(404).send('Could not find channel name. X0-3.');
@@ -86,72 +85,103 @@ function SearchArray(nameKey, myArray){
         }
     }
 }
-async function SendEmbed(Channel, Information, Player, PlayerInGroup, Group, Thumbnail){
+async function SendEmbed(Channel, Information){
+	if (!Information.extensions) return console.error("You must supply Extensions in order to comply with the bot.")
+	var Extensions = Information.extensions
+
 	var DiscordDataEmbed = {
-		color: 000000, 
+		color: 0000000, 
 		fields: [
 
 		],
 		timestamp: new Date()
 	}
+
+	
+
+	if (Extensions.Message){
+		var MessageExtension = Extensions.Message
+		if (MessageExtension.MessageColor && MessageExtension.MessageColor !== false) {DiscordDataEmbed.color = MessageExtension.MessageColor}
+		if (MessageExtension.Message.length > 1) { DiscordDataEmbed.description = MessageExtension.Message }
+	}
+
  	function PlayerCallback(){
-		if (Player == true) {
-			DiscordDataEmbed.fields.push({name: '__Player Name__', value: "**" + Information.playerName + "**"})
-			DiscordDataEmbed.fields.push({name: '__Player UserId__', value: "**" + Information.playerId + "**"})
-			DiscordDataEmbed.description = Information.text
-			if (PlayerInGroup == true) {
+		if (Extensions.Player) {
+			if (Extensions.Player.Enabled && Extensions.Player.Enabled !== true) return; 
+			var PlayerExtensions = Extensions.Player
+			if (PlayerExtensions.Username && PlayerExtensions.Username.Enabled !== false) DiscordDataEmbed.fields.push({name: '__Player Name__', value: "**" + PlayerExtensions.Username.Value + "**"});
+			if (PlayerExtensions.UserId && PlayerExtensions.UserId.Enabled !== false) DiscordDataEmbed.fields.push({name: '__Player UserId__', value: "**" + PlayerExtensions.UserId.Value + "**"});
+			if (PlayerExtensions.AccountAge && PlayerExtensions.AccountAge.Enabled !== false) DiscordDataEmbed.fields.push({name: '__Player Account Age__', value: "**" + PlayerExtensions.AccountAge.Value + "**"});
+
+			if (PlayerExtensions.InGroup && PlayerExtensions.InGroup == true) {
 				var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
 				return Dependencies.Fetch(PlayerGroupURL)
 					.then(Resolve => Resolve.json())
 					.then(json => {
 						var Search =  SearchArray(Information.assignedGroup, json)
 						if (Search) {
-							console.log("Pushing Role Values..")
-
 							DiscordDataEmbed.fields.push({name: `__Is In Group(${Information.assignedGroup})?__`, value: "**Yes**"});
-							DiscordDataEmbed.fields.push({name: `__Role In Group(${Information.assignedGroup})?__`, value: "**" + Search.Role + "**"});
+							if (PlayerExtensions.RoleInGroup && PlayerExtensions.RoleInGroup == true) DiscordDataEmbed.fields.push({name: `__Role In Group(${Information.assignedGroup})?__`, value: "**" + Search.Role + "**"});
 						} else {
-							console.log("Pushing Role Values..")
-
 							DiscordDataEmbed.fields.push({name: `__Is In Group(${Information.assignedGroup})?__`, value: "**No**"});
-							DiscordDataEmbed.fields.push({name: `__Role In Group(${Information.assignedGroup})?__`, value: "**N/A**"});
+							if (PlayerExtensions.RoleInGroup && PlayerExtensions.RoleInGroup == true) DiscordDataEmbed.fields.push({name: `__Role In Group(${Information.assignedGroup})?__`, value: "**N/A**"});
 						}
 					})
 			}
 		};
 	}
 	function ThumbnailCallback(){	
-		if (Thumbnail == true) {
-			var ThumbnailURL = "https://www.roblox.com/bust-thumbnail/json?userId=" + Information.playerId + "&height=180&width=180";
-			return Dependencies.Fetch(ThumbnailURL)
-				.then(Resolve => Resolve.json())
-				.then(json => {
-					if (Information.waitForPictureReady && json.Final === false) {
-						console.log("No Profile Picture ready. " + json.Url);
-					} else {	
-						console.log("Pushing Thumbnail Value..");
-						DiscordDataEmbed.thumbnail = { url: json.Url };
-					}
-				})
+		if (Extensions.Player) {
+			if (Extensions.Player.Enabled && Extensions.Player.Enabled !== true) return; 
+
+			var PlayerExtensions = Extensions.Player
+			if (PlayerExtensions.Thumbnail && PlayerExtensions.Thumbnail == true){
+				var ThumbnailURL = "https://www.roblox.com/bust-thumbnail/json?userId=" + PlayerExtensions.UserId.Value + "&height=180&width=180";
+				return Dependencies.Fetch(ThumbnailURL)
+					.then(Resolve => Resolve.json())
+					.then(json => {
+						if (Information.waitForPictureReady && json.Final === false) {
+							console.log("No Profile Picture ready. " + json.Url);
+						} else {	
+							if (!DiscordDataEmbed.thumbnail){
+								DiscordDataEmbed.thumbnail = { url: json.Url };
+							}	
+						}
+					})
+			}		
 		};
 	}
 	function GroupCallback(){	
-		if (Group == true) {
+		if (Extensions.Group) {
+			if (Extensions.Group.Enabled && Extensions.Group.Enabled !== true) return; 
+
+			var GroupExtension = Extensions.Group
 			var GroupURL = ("https://api.roblox.com/groups/" + Information.assignedGroup)
 			return Dependencies.Fetch(GroupURL)
 				.then(Resolve => Resolve.json())
 				.then(json => {
-					console.log("Pushing Group Information")
-
-					DiscordDataEmbed.fields.push({name: '__Group Name__', value: "**" + json.Name + "**"});
-					DiscordDataEmbed.fields.push({name: '__Group Owner__', value: "**" + `${json.Owner.Name}:${json.Owner.Id}` + "**"});
-					DiscordDataEmbed.fields.push({name: '__Group Description__', value: "*" + json.Description + "*"});
+					if (GroupExtension.Name && GroupExtension.Name !== false) DiscordDataEmbed.fields.push({name: '__Group Name__', value: "**" + json.Name + "**"});
+					if (GroupExtension.Owner && GroupExtension.Owner !== false) DiscordDataEmbed.fields.push({name: '__Group Owner__', value: "**" + `${json.Owner.Name}:${json.Owner.Id}` + "**"});
+					if (GroupExtension.Description && GroupExtension.Description !== false) DiscordDataEmbed.fields.push({name: '__Group Description__', value: "*" + json.Description + "*"});
+					if (GroupExtension.Thumbnail && GroupExtension.Thumbnail !== false){
+						if (!DiscordDataEmbed.thumbnail){
+							DiscordDataEmbed.thumbnail = { url: json.EmblemUrl }
+						}
+					}
 				})
 		};
 	}
+	function ServerCallback(){
+		if (Extensions.Server) {
+			if (Extensions.Server.Enabled && Extensions.Server.Enabled !== true) return;
+			var ServerExtension = Extensions.Server
+			if (ServerExtension.JobId && ServerExtension.JobId !== false) DiscordDataEmbed.fields.push({name: '__Server ID__', value: "**" + ServerExtension.JobId + "**"});
+			if (ServerExtension.PlayerCount && ServerExtension.PlayerCount !== false) DiscordDataEmbed.fields.push({name: '__Server Player Count__', value: "**" + ServerExtension.PlayerCount + "**"});
+		}
+	}
 
-	Promise.all([PlayerCallback(), ThumbnailCallback(), GroupCallback()])
-	.then(([PCB, TCB, GCB]) => {
+	Promise.all([PlayerCallback(), ThumbnailCallback(), GroupCallback(), ServerCallback()])
+	.then(([PCB, TCB, GCB, SCB]) => {
 		console.log(DiscordDataEmbed)
 		Channel.send({ embed: DiscordDataEmbed })
 	})
@@ -187,8 +217,15 @@ Client.on("message", Message => {
 		var ToSend = {
 			"assignedGroup": Settings.Operations.MainUser.assignedGroup,
 		}
-
-		SendEmbed(Message.channel, ToSend, false, false, true, false);
+		var Extensions = {
+			Group = {
+				Name = true,
+				Owner = true,
+				Description = true,
+				Thumbnail = true
+			}
+		}
+		SendEmbed(Message.channel, ToSend, Extensions);
 	}
 });
 
