@@ -165,7 +165,8 @@ async function SendEmbed(Channel, Information){
 					if (GroupExtension.Description && GroupExtension.Description !== false) DiscordDataEmbed.fields.push({name: '__Group Description__', value: "*" + json.Description + "*"});
 					if (GroupExtension.Thumbnail && GroupExtension.Thumbnail !== false){
 						if (!DiscordDataEmbed.thumbnail){
-							DiscordDataEmbed.thumbnail = { url: json.EmblemUrl }
+							var ImageLink = json.EmblemUrl.tostring()
+							DiscordDataEmbed.thumbnail = { url: "https://www.roblox.com/asset-thumbnail/image?assetId=" + ImageLink.removeWord("http://www.roblox.com/asset/?id=") + "&width=420&height=420&format=png" }
 						}
 					}
 				})
@@ -219,7 +220,7 @@ Client.on("message", Message => {
 			"extensions": {
 				Group: {
 					"Name": true,
-					"Group": true,
+					"Owner": true,
 					"Description": true,
 					"Thumbnail": true
 				}
