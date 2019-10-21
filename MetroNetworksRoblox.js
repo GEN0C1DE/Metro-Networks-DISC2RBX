@@ -165,7 +165,7 @@ async function SendEmbed(Channel, Information){
 					if (GroupExtension.Description && GroupExtension.Description !== false) DiscordDataEmbed.fields.push({name: '__Group Description__', value: "*" + json.Description + "*"});
 					if (GroupExtension.Thumbnail && GroupExtension.Thumbnail !== false){
 						if (!DiscordDataEmbed.thumbnail){
-							DiscordDataEmbed.thumbnail = { url: "https://www.roblox.com/asset-thumbnail/image?assetId=" + ImageLink.slice(0, 31) + "&width=420&height=420&format=png" }
+							DiscordDataEmbed.thumbnail = { url: "https://www.roblox.com/asset-thumbnail/image?assetId=" + json.EmblemUrl.slice(0, 31) + "&width=420&height=420&format=png" }
 						}
 					}
 				})
