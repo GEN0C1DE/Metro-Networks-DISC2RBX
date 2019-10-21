@@ -114,12 +114,11 @@ async function SendEmbed(Channel, Information){
 			if (PlayerExtensions.AccountAge && PlayerExtensions.AccountAge.Enabled !== false) DiscordDataEmbed.fields.push({name: '__Player Account Age__', value: "**" + PlayerExtensions.AccountAge.Value + "**"});
 
 			if (PlayerExtensions.InGroup && PlayerExtensions.InGroup == true) {
-				var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
+				var PlayerGroupURL = ("https://api.roblox.com/users/" + PlayerExtensions.UserId.Value + "/groups")
 				return Dependencies.Fetch(PlayerGroupURL)
 					.then(Resolve => Resolve.json())
-					.then(async json =>  {
-						var Search =  await SearchArray(Information.assignedGroup, json)
-						console.log(Search)
+					.then(json =>  {
+						var Search = SearchArray(Information.assignedGroup, json)
 						if (Search) {
 							DiscordDataEmbed.fields.push({name: `__Is In Group(${Information.assignedGroup})?__`, value: "**Yes**"});
 							if (PlayerExtensions.RoleInGroup && PlayerExtensions.RoleInGroup == true) DiscordDataEmbed.fields.push({name: `__Role In Group(${Information.assignedGroup})?__`, value: "**" + Search.Role + "**"});
