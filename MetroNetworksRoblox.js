@@ -216,16 +216,16 @@ Client.on("message", Message => {
 	} else if (Message.content === Prefix + "group") {
 		var ToSend = {
 			"assignedGroup": Settings.Operations.MainUser.assignedGroup,
-		}
-		var Extensions = {
-			Group: {
-				"Name": true,
-				"Group": true,
-				"Description": true,
-				"Thumbnail": true
+			"extensions": {
+				Group: {
+					"Name": true,
+					"Group": true,
+					"Description": true,
+					"Thumbnail": true
+				}
 			}
 		}
-		SendEmbed(Message.channel, ToSend, Extensions);
+		SendEmbed(Message.channel, ToSend);
 	}
 });
 
