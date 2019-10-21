@@ -119,6 +119,7 @@ async function SendEmbed(Channel, Information){
 					.then(Resolve => Resolve.json())
 					.then(async json =>  {
 						var Search =  await SearchArray(Information.assignedGroup, json)
+						console.log(Search)
 						if (Search) {
 							DiscordDataEmbed.fields.push({name: `__Is In Group(${Information.assignedGroup})?__`, value: "**Yes**"});
 							if (PlayerExtensions.RoleInGroup && PlayerExtensions.RoleInGroup == true) DiscordDataEmbed.fields.push({name: `__Role In Group(${Information.assignedGroup})?__`, value: "**" + Search.Role + "**"});
