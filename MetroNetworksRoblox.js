@@ -105,7 +105,7 @@ async function SendEmbed(Channel, Information){
 		if (MessageExtension.Message.length > 1) { DiscordDataEmbed.description = MessageExtension.Message }
 	}
 
- 	function PlayerCallback(){
+ 	async function PlayerCallback(){
 		if (Extensions.Player) {
 			if (Extensions.Player.Enabled && Extensions.Player.Enabled !== true) return; 
 			var PlayerExtensions = Extensions.Player
