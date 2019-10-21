@@ -218,7 +218,7 @@ Client.on("message", Message => {
 			"assignedGroup": Settings.Operations.MainUser.assignedGroup,
 		}
 		var Extensions = {
-			Group = {
+			Group: {
 				"Name": true,
 				"Group": true,
 				"Description": true,
