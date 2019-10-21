@@ -105,7 +105,7 @@ async function SendEmbed(Channel, Information){
 		if (MessageExtension.Message.length > 1) { DiscordDataEmbed.description = MessageExtension.Message }
 	}
 
- 	async function PlayerCallback(){
+ 	function PlayerCallback(){
 		if (Extensions.Player) {
 			if (Extensions.Player.Enabled && Extensions.Player.Enabled !== true) return; 
 			var PlayerExtensions = Extensions.Player
@@ -117,7 +117,7 @@ async function SendEmbed(Channel, Information){
 				var PlayerGroupURL = ("https://api.roblox.com/users/" + Information.playerId + "/groups")
 				return Dependencies.Fetch(PlayerGroupURL)
 					.then(Resolve => Resolve.json())
-					.then(json => {
+					.then(async json =>  {
 						var Search =  await SearchArray(Information.assignedGroup, json)
 						if (Search) {
 							DiscordDataEmbed.fields.push({name: `__Is In Group(${Information.assignedGroup})?__`, value: "**Yes**"});
