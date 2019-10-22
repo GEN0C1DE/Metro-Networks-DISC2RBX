@@ -92,6 +92,13 @@ function SearchArray(nameKey, myArray){
         }
     }
 }
+function CommandSearchArray(nameKey, myArray){
+    for (var i=0; i < myArray.length; i++) {
+        if (myArray[i].commandChannelName === nameKey) {
+            return myArray[i];
+        }
+    }
+}
 async function SendEmbed(Channel, Information){
 	if (!Information.extensions) return console.error("You must supply Extensions in order to comply with the bot.")
 	var Extensions = Information.extensions
@@ -204,9 +211,8 @@ Client.on("ready", Ready => {
 
 //on message
 Client.on("message", Message => {
-	if (!Message.content.startsWith(Prefix) || Message.channel.name !== Settings.Operations.MainUser.commandChannelName) {
-		return "";
-	};
+	var SearchForAPIKey = CommandSearchArray(Message.channel.name, Settings.Operations)
+	if (!Message.content.startsWith(Prefix) || !SearchForAPIKey) return;
 
 	//later: figure out how to manage per-guild settings
 	if (Message.content === Prefix + "uptime") {
