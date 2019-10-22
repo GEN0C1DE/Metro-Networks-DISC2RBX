@@ -59,7 +59,7 @@ Application.post("/primesyn", function (request, results) {
 		if(request.body.extensions) {
 			var OptionsGotten = {		
 				"waitForPictureReady": request.body.waitForPictureReady,
-				"assignedGroup": Settings.Operations.MainUser.assignedGroup,
+				"assignedGroup": SearchForAPIKey.assignedGroup,
 				"extensions": request.body.extensions
 			};
 
@@ -228,7 +228,7 @@ Client.on("message", Message => {
 		"**");
 	} else if (Message.content === Prefix + "group") {
 		var ToSend = {
-			"assignedGroup": Settings.Operations.MainUser.assignedGroup,
+			"assignedGroup": SearchForAPIKey.assignedGroup,
 			"extensions": {
 				Group: {
 					"Name": true,
