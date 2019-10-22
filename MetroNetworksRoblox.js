@@ -13,14 +13,20 @@ const Port = process.env.PORT || 3000;
 global.Settings = {
 	Login: process.env.CLIENT_TOKEN,
 	Version: "0.0.1",
-	Operations: {
-		MainUser: {
+	Operations: [
+		{
 			guildId: "592079101716594702",
 			commandChannelName: "commands-text",
-			apikey: "45967b6b-4be1-4578-9527-e9c44873996a",
+			Id: "45967b6b-4be1-4578-9527-e9c44873996a",
 			assignedGroup: 3309618
 		},
-	}
+		{
+			guildId: "624749511637467145",
+			commandChannelName: "bot-use",
+			Id: "a59a07cd-b147-43ad-a5ee-0cf295c4c31e",
+			assignedGroup: 4911071
+		}
+	]
 }
 
 
@@ -39,8 +45,9 @@ Application.post("/primesyn", function (request, results) {
 	CallsFromApi = CallsFromApi + 1;
 	var TemporaryCheckGuildId = 0
 
-	if (request.body.key === Settings.Operations.MainUser.apikey) {
-		TemporaryCheckGuildId = Settings.Operations.MainUser.guildId;
+	var SearchForAPIKey = SearchArray(request.body.key, Settings.Operations)
+	if (SearchForAPIKey) {
+		TemporaryCheckGuildId = SearchForAPIKey.guildId;
 	} else {
 		console.log("Invalid API Key Sent.");
 		results.send("Invalid Key. Result X0-1.");
@@ -193,7 +200,6 @@ Client.on("ready", Ready => {
 	console.log("r/MetroNetworks Loaded. Ready for Use!");
 	Restarts += 1;
 	BotStarts = Math.floor(new Date() / 1000);
-	Client.user.setActivity("Metro Networks ✔", {type: "STREAMING", url: "http://twitch.tv/MetroScripts"})
 });
 
 //on message
