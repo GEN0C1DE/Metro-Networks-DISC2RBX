@@ -207,6 +207,7 @@ Client.on("ready", Ready => {
 	console.log("r/MetroNetworks Loaded. Ready for Use!");
 	Restarts += 1;
 	BotStarts = Math.floor(new Date() / 1000);
+	Client.user.setActivity("⬡ Metro Networks | Watching 2 Servers.", {type: "STREAMING", url: "http://twitch.tv/MetroScripts"})
 });
 
 //on message
