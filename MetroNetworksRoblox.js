@@ -227,10 +227,15 @@ async function OnStart(){
 	})
 }
 
+Client.on("guildCreate", Guild => {
+	OnStart()
+});
+Client.on("guildDelete", Guild => {
+	OnStart()	
+});
 Client.on("guildMemberAdd", Member => {
 	OnStart()
 });
-
 Client.on("guildMemberRemove ", Member => {
 	OnStart()
 });
