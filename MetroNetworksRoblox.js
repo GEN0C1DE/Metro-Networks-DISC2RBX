@@ -208,13 +208,7 @@ async function SendEmbed(Channel, Information){
 		Channel.send(DiscordMessageEmbed, { embed: DiscordDataEmbed })
 	})
 }
-
-
-
-Client.on("ready", Ready => {
-	console.log("r/MetroNetworks Loaded. Ready for Use!");
-	BotStarts = Math.floor(new Date() / 1000);
-
+async function OnStart(){
 	var Count = 0
 	function GetUsers(){
 		Client.guilds.forEach((guild) => {
@@ -231,6 +225,20 @@ Client.on("ready", Ready => {
 		console.log(Count)
 		Client.user.setActivity(`⬡ Metro Networks | Watching ${Count} Users.`, {type: "STREAMING", url: "http://twitch.tv/MetroScripts"})
 	})
+}
+
+Client.on("guildMemberAdd", Member => {
+	OnStart()
+});
+
+Client.on("guildMemberRemove ", Member => {
+	OnStart()
+});
+
+Client.on("ready", Ready => {
+	console.log("r/MetroNetworks Loaded. Ready for Use!");
+	BotStarts = Math.floor(new Date() / 1000);
+	OnStart()
 });
 
 //on message
