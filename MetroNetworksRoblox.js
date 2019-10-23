@@ -41,7 +41,7 @@ Application.use(Dependencies.BodyParser.json());
 Application.get("/", function (request, results) {
 	results.send("Metro Networks Server Request Was Sent by Request. Connection is Established.");
 });
-Application.post("/primesyn", function (request, results) {
+Application.post("/metropostasync", function (request, results) {
 	CallsFromApi = CallsFromApi + 1;
 	var TemporaryCheckGuildId = 0
 
