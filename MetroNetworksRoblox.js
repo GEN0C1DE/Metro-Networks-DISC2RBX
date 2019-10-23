@@ -25,6 +25,12 @@ global.Settings = {
 			commandChannelName: "bot-use",
 			Id: "a59a07cd-b147-43ad-a5ee-0cf295c4c31e",
 			assignedGroup: 4911071
+		},
+		{
+			guildId: "316362217010495531",
+			commandChannelName: "bot-use",
+			Id: "217ce817-1034-4cbf-bdde-efbb220dd8f6",
+			assignedGroup: 533214
 		}
 	]
 }
@@ -32,7 +38,6 @@ global.Settings = {
 
 var Prefix = "?!" 
 var BotStarts = 0;
-var Restarts = -1;
 var CallsFromApi = 0;
 var Commands = 0;
 
@@ -121,7 +126,7 @@ async function SendEmbed(Channel, Information){
 		};
 		if (MessageExtension.MessageColor && MessageExtension.MessageColor !== false) {DiscordDataEmbed.color = MessageExtension.MessageColor}
 	}
-	
+
  	function PlayerCallback(){
 		if (Extensions.Player) {
 			if (Extensions.Player.Enabled && Extensions.Player.Enabled !== true) return; 
@@ -208,9 +213,18 @@ async function SendEmbed(Channel, Information){
 
 Client.on("ready", Ready => {
 	console.log("r/MetroNetworks Loaded. Ready for Use!");
-	Restarts += 1;
 	BotStarts = Math.floor(new Date() / 1000);
-	Client.user.setActivity("⬡ Metro Networks | Watching 2 Servers.", {type: "STREAMING", url: "http://twitch.tv/MetroScripts"})
+
+	var Count = 0
+	Client.guilds.forEach((guild) => {
+		guild.fetchMembers().then(g => {
+			g.members.forEach((member) => {
+				Count++;
+			});
+		});
+	});
+	
+	Client.user.setActivity(`⬡ Metro Networks | Watching ${Count} Users.`, {type: "STREAMING", url: "http://twitch.tv/MetroScripts"})
 });
 
 //on message
