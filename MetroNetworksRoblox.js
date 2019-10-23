@@ -103,6 +103,7 @@ async function SendEmbed(Channel, Information){
 	if (!Information.extensions) return console.error("You must supply Extensions in order to comply with the bot.")
 	var Extensions = Information.extensions
 
+	var DiscordMessageEmbed = '';
 	var DiscordDataEmbed = {
 		color: 0000000, 
 		fields: [
@@ -111,14 +112,16 @@ async function SendEmbed(Channel, Information){
 		timestamp: new Date()
 	}
 
-	
-
 	if (Extensions.Message){
 		var MessageExtension = Extensions.Message
+		if(MessageExtension.MessageEnabled && MessageExtension.MessageEnabled !== false){
+			if (MessageExtension.Message.length > 1) { 
+				DiscordMessageEmbed = MessageExtension.Message 
+			}
+		};
 		if (MessageExtension.MessageColor && MessageExtension.MessageColor !== false) {DiscordDataEmbed.color = MessageExtension.MessageColor}
-		if (MessageExtension.Message.length > 1) { DiscordDataEmbed.description = MessageExtension.Message }
 	}
-
+	
  	function PlayerCallback(){
 		if (Extensions.Player) {
 			if (Extensions.Player.Enabled && Extensions.Player.Enabled !== true) return; 
@@ -197,7 +200,7 @@ async function SendEmbed(Channel, Information){
 	Promise.all([PlayerCallback(), ThumbnailCallback(), GroupCallback(), ServerCallback()])
 	.then(([PCB, TCB, GCB, SCB]) => {
 		console.log(DiscordDataEmbed)
-		Channel.send({ embed: DiscordDataEmbed })
+		Channel.send(DiscordMessageEmbed, { embed: DiscordDataEmbed })
 	})
 }
 
